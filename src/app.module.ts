@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -8,6 +8,12 @@ import { SubscriptionModule } from './subscription/subscription.module';
 import { PackageModule } from './package/package.module';
 import { ChannelModule } from './channel/channel.module';
 import 'dotenv/config';
+import { User } from './user/user.entity';
+import { Subscription } from './subscription/subscription.entity';
+import { Package } from './package/package.entity';
+import { Channel } from './channel/channel.entity';
+import { AuthModule } from './auth/auth.module';
+import { AuthMiddleware } from './user/auth.middleware';
 
 @Module({
   imports: [
@@ -18,11 +24,11 @@ import 'dotenv/config';
       username: process.env.USER,
       password: process.env.PASS,
       database: process.env.DBNAME,
-      entities: [],
+      entities: [User,Subscription,Package,Channel],
       synchronize: true,
     }),
     UserModule,
-    // AuthModule,
+    AuthModule,
     SubscriptionModule,
     PackageModule,
     ChannelModule,
@@ -30,4 +36,9 @@ import 'dotenv/config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+// configure(consumer:MiddlewareConsumer){
+//   consumer.apply(AuthMiddleware).forRoutes('/auth')
+// }
+}
+  

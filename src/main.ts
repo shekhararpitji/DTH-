@@ -4,8 +4,9 @@ import 'dotenv/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('dth/v1');
   await app.listen(process.env.PORT, () => {
-    console.log(`Server running on port ${5600}`);
+    console.log(`Server running on port ${process.env.PORT}`);
   });
 }
 bootstrap();
