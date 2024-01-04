@@ -1,28 +1,40 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param } from '@nestjs/common';
 import { UserService } from './user.service';
+import * as UserDto from './dto/index';
 import { User } from './user.entity';
-// import { LoginUserDto } from './dto/CreateUser.dto';
+import { DeleteResult } from 'typeorm';
 
-@Controller('/user')
+
+@Controller('/auth/user')
 export class UserController {
 constructor(private userService:UserService){}
 
 
-  @Post()
-    store(@Body() user:User){
+  // @Post('/signup')
+  //   store(@Body() userData:UserDto.CreateUserDto){
       
-      return this.userService.createUser(user);
-    }
-
-  // @Post()
-  //   login(@Body() body:LoginUserDto){
-  //     const {email,password}=body;
-  //     return this.userService.login(email,password);
+  //     return this.userService.createUser(userData);
   //   }
+
+  // @Post('/login')
+  async login(@Body('user') loginUserdto: UserDto.LoginUserDto): Promise<User> {
+      return this.userService.login(loginUserdto);
+    }
   
-  @Get('/user:userId')
-  getUser(@Param()param:{userId:number}){
-    const id=+param;
-    return this.userService.findUsers(id) ;
+  @Get('/get/:userId')
+  getUser(@Param()param:{userId:string}): Promise<User>{
+    const {userId}=param;
+    return this.userService.findUsers(userId) ;
+  }
+
+  @Delete('/:email')
+  delete(@Param()param:{email:string}): Promise<DeleteResult>{
+    const {email}=param;
+    return this.userService.delete(email) ;
+  }
+
+  @Get('/')
+  findAll(){
+    return this.userService.findAll() ;
   }
 }
